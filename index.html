@@ -1,0 +1,142 @@
+<!DOCTYPE html> 
+<html lang="pt-BR"> 
+<head> 
+<meta charset="UTF-8" /> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+<title>Formação de Diretores - Santos/SP | 1ª Edição 2026</title> 
+<style> 
+:root { 
+--bg: #0b0f19; 
+--card: rgba(20, 25, 40, 0.8); 
+--text: #e5e9f0; 
+--muted: #9aa4b2; 
+--accent: #3b82f6; 
+--overlay: rgba(5, 8, 15, 0.95); 
+--shadow: 0 10px 30px rgba(0,0,0,.5); 
+} 
+* { box-sizing: border-box; margin: 0; padding: 0; } 
+html, body { background: var(--bg); color: var(--text); font-family: Arial, sans-serif; overflow-x: hidden; } 
+body { padding: 16px; } 
+.container { max-width: 1200px; margin: auto; } 
+.hero { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow); } 
+.titulo { font-size: 24px; font-weight: bold; margin-bottom: 8px; } 
+.subtitulo { color: var(--muted); font-size: 14px; margin-bottom: 12px; } 
+.botao { display: inline-block; padding: 10px 18px; border-radius: 999px; background: var(--accent); color: white; text-decoration: none; font-weight: bold; margin-top: 10px; } 
+.botao:hover { background: #2563eb; } 
+.meta { margin-top: 12px; font-size: 13px; color: var(--muted); } 
+.galeria { column-count: 4; column-gap: 12px; } 
+.item { break-inside: avoid; margin-bottom: 12px; border-radius: 14px; overflow: hidden; cursor: pointer; background: #111827; box-shadow: var(--shadow); transition: transform .2s; } 
+.item:hover { transform: scale(1.02); } 
+.item img { width: 100%; height: auto; display: block; } 
+/* LIGHTBOX */ 
+.lightbox { position: fixed; inset: 0; background: var(--overlay); display: none; align-items: center; justify-content: center; z-index: 9999; } 
+.lightbox.ativo { display: flex; } 
+.lightbox img { max-width: 95%; max-height: 85vh; border-radius: 10px; } 
+.controle { position: absolute; background: rgba(255,255,255,.1); color: white; border: none; font-size: 26px; cursor: pointer; border-radius: 50%; width: 45px; height: 45px; } 
+.fechar { top: 20px; right: 20px; } 
+.anterior { left: 20px; top: 50%; transform: translateY(-50%); } 
+.proximo { right: 20px; top: 50%; transform: translateY(-50%); } 
+.contador { position: absolute; bottom: 20px; color: white; font-size: 14px; } 
+@media (max-width: 900px) { .galeria { column-count: 3; } } 
+@media (max-width: 600px) { .galeria { column-count: 2; } } 
+@media (max-width: 400px) { .galeria { column-count: 1; } } 
+</style> 
+</head> 
+<body> 
+<div class="container"> 
+<div class="hero"> 
+<div class="titulo">Formação de Diretores – Santos/SP</div> 
+<div class="subtitulo"> 
+1ª Edição 2026 • Registros do encontro com momentos de aprendizagem, troca de experiências e construção coletiva. 
+</div> 
+<a class="botao" href="https://sites.google.com/prof.educacao.sp.gov.br/multiplica2026/in%C3%ADcio" target="_top"> ← Voltar ao site </a> 
+<div class="meta" id="totalFotos"></div> 
+</div> 
+<div class="galeria" id="galeria"></div> 
+</div> 
+<div class="lightbox" id="lightbox"> 
+<button class="controle fechar" onclick="fechar()">×</button> 
+<button class="controle anterior" onclick="anterior()">‹</button> 
+<img id="imgAtual"> 
+<button class="controle proximo" onclick="proxima()">›</button> 
+<div class="contador" id="contador"></div> 
+</div> 
+<script> 
+const fotos = [ 
+"https://lh3.googleusercontent.com/d/10eaCezDWLAyiL8fz7E5FaFVX4TvjNt8l", 
+"https://lh3.googleusercontent.com/d/12VLCVyahCbJc_W0m1sEO49qw8jslzmok", 
+"https://lh3.googleusercontent.com/d/12rcxz6ex_m8VdY6R_WOzep4vldQqcSc0", 
+"https://lh3.googleusercontent.com/d/15g9V-dtH7d1HXO0iYpLEiVA2r69-O_S0", 
+"https://lh3.googleusercontent.com/d/16m4AoQ24VLsHFKBdT0FAhE4C2KRJG6Cw", 
+"https://lh3.googleusercontent.com/d/18wNQgV4hWvapLw0cBHNON687HvsRZo4b", 
+"https://lh3.googleusercontent.com/d/1BHYu4osODjPJPa_WrsWV4hD-gElQkj7G", 
+"https://lh3.googleusercontent.com/d/1GAa6TVZ9wLnHZ9sfq34dGW4tIFd7vlsQ", 
+"https://lh3.googleusercontent.com/d/1He3LrcoFJaMWM7Rz44JbSlCzTg31rv5T", 
+"https://lh3.googleusercontent.com/d/1HkxdGmTjq-vYv02zAdrD3E5Rz2mhB9nV", 
+"https://lh3.googleusercontent.com/d/1I6nle0MI_j-N3BJHUQdlQ62D_JWz_5u7", 
+"https://lh3.googleusercontent.com/d/1IgojwvfKDNw6w5rMGn_y-AnSWVYjZRGS", 
+"https://lh3.googleusercontent.com/d/1Jqzi_WGx9rkTaFvLDmLxsHD0zJivQ0kd", 
+"https://lh3.googleusercontent.com/d/1Lb4ewZCeYuIoxJXYMJyc5qqC6_OJrX5d", 
+"https://lh3.googleusercontent.com/d/1LoZnZecPnVUgZ_aw00Hrlr6XTQNSeIio", 
+"https://lh3.googleusercontent.com/d/1My7ZyxyLKpA9H3JvxSH3-5pKwcpGwMBS", 
+"https://lh3.googleusercontent.com/d/1O49ukHq_KKr_s9d5CRGkGGF89VfXfb2_", 
+"https://lh3.googleusercontent.com/d/1OEgmMh9_kCM-ZBNGXfKwV0GCtkBuOeOT", 
+"https://lh3.googleusercontent.com/d/1RCGTylhpyeld-sSBgXWSPBzNRlXdH35Y", 
+"https://lh3.googleusercontent.com/d/1Y3wHrQc6wLlISAbFA73w2ojr2rMe1mh_", 
+"https://lh3.googleusercontent.com/d/1_UghhgMYbl3aq8ZKNDJuMysGvrRifY0r", 
+"https://lh3.googleusercontent.com/d/1btMddLUifWiFa2A6T36nG1AGgud2e3MP", 
+"https://lh3.googleusercontent.com/d/1frBLovjF-jrdNX_zIQrv6wGUPqTH0hse", 
+"https://lh3.googleusercontent.com/d/1gPeaP5YmmU5s6t-xhyp3qJrF1TCKZqmh", 
+"https://lh3.googleusercontent.com/d/1h0bdGRhpT7UKT6Sv9d8GQmzEK4tOjD-F", 
+"https://lh3.googleusercontent.com/d/1jDI_PSIyUzE-IiUKQIUeXh9z0cJ-eohW", 
+"https://lh3.googleusercontent.com/d/1kP_hoUo2bjeCRe24lmKaD5bHmrUTKQv6", 
+"https://lh3.googleusercontent.com/d/1kgXX7KIDl7GMd_JkamtsLzeE6z1uM9G8", 
+"https://lh3.googleusercontent.com/d/1mVbskiQkixL3--Nr4utf_fagPx8fo2sH", 
+"https://lh3.googleusercontent.com/d/1ml4iiLHWHc1e5COsJIs4Y-uKrQUv9-Q2", 
+"https://lh3.googleusercontent.com/d/1oNmJxXww6EPiM49LKe8_IOizytDKMkCf", 
+"https://lh3.googleusercontent.com/d/1p8CcSIQbqOVpzVFCDAO9mkp6TnGqJH1z", 
+"https://lh3.googleusercontent.com/d/1quHaFiebN-vQO9IsYqcWNBXc0Zb3CN1c", 
+"https://lh3.googleusercontent.com/d/1x6_iEDQwtBAa-27FUEaKT-Dw57l3erKl", 
+"https://lh3.googleusercontent.com/d/1yhSpaevtQmAhKNUWyzE-xYEHnRu_SVr3" 
+]; 
+const galeria = document.getElementById("galeria"); 
+const lightbox = document.getElementById("lightbox"); 
+const imgAtual = document.getElementById("imgAtual"); 
+const contador = document.getElementById("contador"); 
+let index = 0; 
+document.getElementById("totalFotos").innerText = fotos.length + " registros"; 
+function render() { 
+galeria.innerHTML = fotos.map((f,i)=> `<div class="item" onclick="abrir(${i})"> <img src="${f}" loading="lazy"> </div>` ).join(""); 
+} 
+function abrir(i){ 
+index = i; 
+imgAtual.src = fotos[index]; 
+lightbox.classList.add("ativo"); 
+atualizarContador(); 
+} 
+function fechar(){ 
+lightbox.classList.remove("ativo"); 
+} 
+function proxima(){ 
+index = (index+1)%fotos.length; 
+imgAtual.src = fotos[index]; 
+atualizarContador(); 
+} 
+function anterior(){ 
+index = (index-1+fotos.length)%fotos.length; 
+imgAtual.src = fotos[index]; 
+atualizarContador(); 
+} 
+function atualizarContador(){ 
+contador.innerText = (index+1) + " / " + fotos.length; 
+} 
+document.addEventListener("keydown",(e)=>{ 
+if(!lightbox.classList.contains("ativo")) return; 
+if(e.key==="Escape") fechar(); 
+if(e.key==="ArrowRight") proxima(); 
+if(e.key==="ArrowLeft") anterior(); 
+}); 
+render(); 
+</script> 
+</body> 
+</html>
